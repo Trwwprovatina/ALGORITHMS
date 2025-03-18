@@ -1,0 +1,55 @@
+using System;
+
+class InsertionSortExample
+{
+    // Function to perform Insertion Sort
+    static void InsertionSort(int[] array)
+    {
+        int n = array.Length;
+        for (int i = 1; i < n; i++)
+        {
+            int key = array[i];
+            int j = i - 1;
+
+            // Shift elements to the right if they are greater than key
+            while (j >= 0 && array[j] > key)
+            {
+                array[j + 1] = array[j];
+                j--;
+            }
+            array[j + 1] = key; // Insert the key at the correct position
+        }
+    }
+
+    // Function to print the array
+    static void PrintArray(int[] array)
+    {
+        Console.WriteLine(string.Join(" ", array));
+    }
+
+    // Main method
+    static void Main()
+    {
+        Console.Write("Enter the number of elements: ");
+        int n = int.Parse(Console.ReadLine());
+
+        int[] array = new int[n];
+
+        // Taking user input for the array elements
+        Console.WriteLine("Enter the elements.");
+        for (int i = 0; i < n; i++)
+        {
+            Console.Write($"Element {i + 1}: ");
+            array[i] = int.Parse(Console.ReadLine());
+        }
+
+        Console.WriteLine("\nOriginal array:");
+        PrintArray(array);
+
+        // Sorting the array
+        InsertionSort(array);
+
+        Console.WriteLine("\nSorted array:");
+        PrintArray(array);
+    }
+}
