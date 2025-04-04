@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_N 20
+
+// Function Prototypes
+void print_chessboard(int board[MAX_N][MAX_N], int N);
+int is_safe(int board[MAX_N][MAX_N], int row, int col, int N);
+int solve_nqueens(int board[MAX_N][MAX_N], int row, int N, int* solution_count);
+int prompt_play_again();
+
+void print_chessboard(int board[MAX_N][MAX_N], int N) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            printf("%c ", board[i][j] ? 'Q' : '.');
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+int is_safe(int board[MAX_N][MAX_N], int row, int col, int N) {
+    for (int i = 0; i < row; i++) {
+        if (board[i][col]) return 0;
+    }
+
+    for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+        if (board[i][j]) return 0;
+    }
+
+    for (int i = row, j = col; i >= 0 && j < N; i--, j++) {
+        if (board[i][j]) return 0;
+    }
+
+    return 1;
+}
+
+int solve_nqueens(int board[MAX_N][MAX_N], int row, int N, int* solution_count) {
+    if (row == N) {
+        (*solution_count)++;
+        print_chessboard(board, N);
+        return 1;
+    }
+
+    int found = 0;
+
+    for (int col = 0; col < N; col++) {
+        if (is_safe(board, row, col, N)) {
+            board[row][col] = 1;
+            found |= solve_nqueens(board, row + 1, N, solution_count);
+            board[row][col] = 0;
+        }
+    }
+
+    return found;
+}
+
+int prompt_play_again() {
+    char response;
+    printf("Do you want to try another size? (y/n): ");
+    scanf(" %c", &response);
+    return response == 'y' || response == 'Y';
+}
+
+int main() {
+    int N, solution_count;
+
+    do {
+        printf("Enter the size of the chessboard (N <= %d): ", MAX_N);
+        scanf("%d", &N);
+
+        if (N <= 0 || N > MAX_N) {
+            printf("Invalid size! Please enter a number between 1 and %d.\n", MAX_N);
+            continue;
+        }
+
+        int board[MAX_N][MAX_N] = {0};
+        solution_count = 0;
+
+        printf("Searching for solutions...\n");
+
+        if (!solve_nqueens(board, 0, N, &solution_count)) {
+            printf("No solution found for N = %d.\n", N);
+        } else {
+            printf("Total number of solutions for N = %d: %d\n", N, solution_count);
+        }
+
+    } while (prompt_play_again());
+
+    return 0;
+}
